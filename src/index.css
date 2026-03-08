@@ -1,8 +1,8 @@
 @import "tailwindcss";
-
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
+  /* Colors */
   --color-primary: #2eaadc;
   --color-background-light: #ffffff;
   --color-background-dark: #121c20;
@@ -12,12 +12,19 @@
   --color-border-subtle: rgba(55, 53, 47, 0.09);
   --color-hover-bg: rgba(55, 53, 47, 0.08);
 
+  /* Font */
   --font-display: "Inter", sans-serif;
 
-  --radius: 0.25rem;
+  /* Border Radius */
+  --radius-DEFAULT: 0.25rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
   --radius-full: 9999px;
+
+  --color-notion-bg: #f7f6f3;
+  --color-notion-text: #37352f;
+  --color-notion-border: #e1dfdd;
+  --color-notion-gray: #9b9a97; 
 }
 
 /* :root {

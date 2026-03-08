@@ -10,11 +10,9 @@ const root = createRoot(document.getElementById('root'));
 
 // TODO: wrap App with store provider
 root.render(
-  // <Provider store={store}>
   <BrowserRouter>
     <StrictMode>
       <App />
     </StrictMode>
   </BrowserRouter>
-  // </Provider>
 );

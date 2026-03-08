@@ -21,34 +21,37 @@ const compat = new FlatCompat({
 });
 
 export default defineConfig([
-  { ignores: ["eslint.config.js", "vite.config.js"] },
+  { ignores: ['eslint.config.js', 'vite.config.js'] },
   {
-    files: ["**/*.{js,mjs,cjs,jsx}"],
+    files: ['**/*.{js,mjs,cjs,jsx}'],
     plugins: {
       js,
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
       react,
       prettier,
     },
-    extends: ["js/recommended"],
-    languageOptions: { globals: globals.browser, parserOptions: { ecmaVersion: "latest", sourceType: "module" } },
+    extends: ['js/recommended'],
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
+    },
   },
-  ...compat.extends("airbnb"),
+  ...compat.extends('dicodingacademy'),
   pluginReact.configs.flat.recommended,
   prettierConfig,
   {
     rules: {
       ...js.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
-      "react/prop-types": "warn",
-      "react/react-in-jsx-scope": "off",
-      "no-unused-vars": "warn",
-      "react-refresh/only-export-components": [
-        "warn",
+      'react/prop-types': 'warn',
+      'react/react-in-jsx-scope': 'off',
+      'no-unused-vars': 'warn',
+      'react-refresh/only-export-components': [
+        'warn',
         { allowConstantExport: true },
       ],
-      "prettier/prettier": "warn",
+      'prettier/prettier': 'warn',
     },
   },
 ]);

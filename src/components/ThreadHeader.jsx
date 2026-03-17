@@ -1,10 +1,39 @@
 import PropTypes from 'prop-types';
+import ColorHash from 'color-hash';
 
-function ThreadHeader({ category, title, author, date, readTime }) {
+function formatRelativeTime(dateString) {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffInSeconds = Math.floor((now - date) / 1000);
+  // console.log('date:', date, 'now:', now, 'diffInSeconds:', diffInSeconds);
+
+  const units = [
+    { label: 'tahun', seconds: 60 * 60 * 24 * 365 },
+    { label: 'bulan', seconds: 60 * 60 * 24 * 30 },
+    { label: 'hari', seconds: 60 * 60 * 24 },
+    { label: 'jam', seconds: 60 * 60 },
+    { label: 'menit', seconds: 60 },
+    { label: 'detik', seconds: 1 },
+  ];
+
+  for (const unit of units) {
+    const value = Math.floor(diffInSeconds / unit.seconds);
+    if (value >= 1) {
+      return `${value} ${unit.label} lalu`;
+    }
+  }
+  return 'baru saja';
+}
+function ThreadHeader({ category, title, author, date }) {
+  const colorHash = new ColorHash();
+  const bg = colorHash.hex(category);
   return (
     <header className="mb-10 group">
       <div className="mb-4">
-        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+        <span
+          className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#${category}]"
+          style={{ backgroundColor: bg, color: '#fff' }}
+        >
           {category}
         </span>
       </div>
@@ -20,16 +49,14 @@ function ThreadHeader({ category, title, author, date, readTime }) {
             className="w-6 h-6 rounded-full object-cover"
             src={author.avatar}
           />
-          <div className="flex items-center gap-2 text-sm">
+          <div className="  items-center gap-2 text-sm">
             <span className="font-medium text-slate-900 dark:text-slate-200">
               {author.name}
             </span>
-            <span className="text-slate-400">•</span>
-            <span className="text-slate-500 dark:text-slate-400">{date}</span>
-            <span className="text-slate-400">•</span>
-            <span className="text-slate-500 dark:text-slate-400">
-              {readTime}
-            </span>
+            <br></br>
+            <p className="text-slate-500 dark:text-slate-400">
+              {formatRelativeTime(date)}
+            </p>
           </div>
         </div>
 

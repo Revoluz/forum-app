@@ -1,28 +1,36 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthCard from '../components/AuthCard';
 import FormInput from '../components/FormInput';
+import useInput from '../hooks/useInput';
+import { useDispatch } from 'react-redux';
+import { asyncRegister } from '../states/users/action';
 
 function RegisterPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, onNameChange] = useInput('');
+  const [email, onEmailChange] = useInput('');
+  const [password, onPasswordChange] = useInput('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // TODO: dispatch asyncRegister
-    console.log({ name, email, password });
+  const handleSubmit = async ({ name, email, password }) => {
+    try {
+      await dispatch(asyncRegister({ name, email, password }));
+      navigate('/');
+    } catch (error) {
+      alert(error.response?.data?.message || error.message);
+    }
   };
 
   return (
     <AuthCard>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4">
         <FormInput
           label="Name"
           type="text"
           placeholder="Enter your name"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={onNameChange}
           required
         />
         <FormInput
@@ -30,7 +38,7 @@ function RegisterPage() {
           type="email"
           placeholder="Enter your email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={onEmailChange}
           required
         />
         <FormInput
@@ -38,12 +46,13 @@ function RegisterPage() {
           type="password"
           placeholder="Enter your password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={onPasswordChange}
           required
         />
         <button
-          type="submit"
+          type="button"
           className="mt-2 w-full h-10 bg-notion-text dark:bg-primary text-white rounded-btn text-sm font-medium hover:bg-opacity-90 transition-opacity"
+          onClick={() => handleSubmit({ name, email, password })}
         >
           Create Account
         </button>

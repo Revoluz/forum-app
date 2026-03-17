@@ -49,6 +49,7 @@ function CommentItem({
 }
 
 CommentItem.propTypes = {
+  // shape berfungsi untuk mendefinisikan bentuk objek author yang memiliki properti name dan avatar
   author: PropTypes.shape({
     name: PropTypes.string.isRequired,
     avatar: PropTypes.string.isRequired,

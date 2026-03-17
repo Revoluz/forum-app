@@ -1,27 +1,35 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthCard from '../components/AuthCard';
 import FormInput from '../components/FormInput';
+import useInput from '../hooks/useInput';
+import { useDispatch } from 'react-redux';
+import { asyncSetAuthUser } from '../states/authUser/action';
 
 function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+  const [email, onEmailChange] = useInput('');
+  const [password, onPasswordChange] = useInput('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // TODO: dispatch asyncLogin
-    console.log({ email, password });
+  const onLogin = ({ email, password }) => {
+    console.log(email, password);
+    dispatch(asyncSetAuthUser({ email, password }));
   };
 
   return (
     <AuthCard>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onLogin({ email, password });
+        }}
+        className="flex flex-col gap-4"
+      >
         <FormInput
           label="Email"
           type="email"
           placeholder="Enter your email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={onEmailChange}
           required
         />
         <FormInput
@@ -29,7 +37,7 @@ function LoginPage() {
           type="password"
           placeholder="Enter your password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={onPasswordChange}
           required
         />
         <button

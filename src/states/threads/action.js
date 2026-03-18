@@ -56,6 +56,52 @@ function asyncAddThread({ title, body, category }) {
   };
 }
 
+function asyncToggleUpVoteThread(threadId) {
+  return async (dispatch, getState) => {
+    const { authUser } = getState();
+    if (!authUser) {
+      alert('You must be logged in to vote');
+      return;
+    }
+    // optimistic: update UI dulu
+    dispatch(
+      toggleUpvoteThreadActionCreator({ threadId, userId: authUser.id })
+    );
+    try {
+      await api.upVoteThread(threadId);
+    } catch (error) {
+      // revert jika API gagal
+      dispatch(
+        toggleUpvoteThreadActionCreator({ threadId, userId: authUser.id })
+      );
+      alert(error.message);
+    }
+  };
+}
+
+function asyncToggleDownVoteThread(threadId) {
+  return async (dispatch, getState) => {
+    const { authUser } = getState();
+    if (!authUser) {
+      alert('You must be logged in to vote');
+      return;
+    }
+    // optimistic: update UI dulu
+    dispatch(
+      toggleDownvoteThreadActionCreator({ threadId, userId: authUser.id })
+    );
+    try {
+      await api.downVoteThread(threadId);
+    } catch (error) {
+      // revert jika API gagal
+      dispatch(
+        toggleDownvoteThreadActionCreator({ threadId, userId: authUser.id })
+      );
+      alert(error.message);
+    }
+  };
+}
+
 export {
   ActionType,
   receiveThreadsActionCreator,
@@ -63,4 +109,6 @@ export {
   toggleUpvoteThreadActionCreator,
   toggleDownvoteThreadActionCreator,
   asyncAddThread,
+  asyncToggleUpVoteThread,
+  asyncToggleDownVoteThread,
 };

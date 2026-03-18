@@ -5,6 +5,11 @@ import {
   asyncReceiveThreadDetail,
   asyncToggleUpVoteThreadDetail,
   asyncToggleDownVoteThreadDetail,
+  asyncToggleNeutralVoteThreadDetail,
+  asyncAddComment,
+  asyncToggleUpVoteComment,
+  asyncToggleDownVoteComment,
+  asyncToggleNeutralVoteComment,
 } from '../states/threadDetail/action';
 
 import parse from 'html-react-parser';
@@ -12,51 +17,29 @@ import ThreadHeader from '../components/ThreadHeader';
 import VoteButtons from '../components/VoteButtons';
 import CommentInput from '../components/CommentInput';
 import CommentItem from '../components/CommentItem';
+function formatRelativeTime(dateString) {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffInSeconds = Math.floor((now - date) / 1000);
+  // console.log('date:', date, 'now:', now, 'diffInSeconds:', diffInSeconds);
 
-// TODO: Nanti dari Redux store
-// const DUMMY_THREAD = {
-//   category: 'Engineering',
-//   title: 'Architecting Scalable Microservices with Event Sourcing and DDD',
-//   author: {
-//     name: 'Alex Rivera',
-//     avatar:
-//       'https://lh3.googleusercontent.com/aida-public/AB6AXuDT5w-w1OPWiBvlcQycrchZrvZX3Yf_4pXaVRtmrI-77snne9gRtZQCJnH4YFxsGqDOEQJPO284y8Yu0NzcDolDoVFqJBUh0pUUm4c8gDhO-25xjyf9cM0EegsC8i9ZQzeCO3HrL9HmkeeFe92M5625xtpb2e87tj0EieeCvymggdpClE_c6i-zRx9r4MkWFYEQvatGE-Zkz_yr41aSzv019BPdiMhyPzn3YeDcyP3lKm-yDQF8vz_w-a0kBgiBKA-ZUmj0WdRAFuc',
-//   },
-//   date: 'Oct 24, 2023',
-//   readTime: '8 min read',
-//   upVotes: 124,
-//   downVotes: 12,
-// };
+  const units = [
+    { label: 'tahun', seconds: 60 * 60 * 24 * 365 },
+    { label: 'bulan', seconds: 60 * 60 * 24 * 30 },
+    { label: 'hari', seconds: 60 * 60 * 24 },
+    { label: 'jam', seconds: 60 * 60 },
+    { label: 'menit', seconds: 60 },
+    { label: 'detik', seconds: 1 },
+  ];
 
-const DUMMY_COMMENTS = [
-  {
-    id: 'c1',
-    author: {
-      name: 'James Chen',
-      avatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuCuMMexf3J_EsvV8oPhLcdR6_pndRF1DEHkq_Q981UapdTqr36JhgcyjGUdQrAPpN8UR7RUc8N8JBIly73NhZx1hZBr1r3kgdFetEHaohcxtyso4xuSr5QxMGWbC2ccMXe9v8LQ7slgODgobYC6YN99Eo3UyfvawzrbM281N50356eNIPOFsxrs3bKodsD2V15fHl_hzc2_PNqK3KXC_KdBK5sEiTnP_20P1_KpqIueErl1AQHQfVhxyWiTDXa0Flb8wS2eoQSKxBk',
-    },
-    timeAgo: '2h ago',
-    content:
-      'This is a great write-up, Alex. How are you handling event schema evolution?',
-    upVotes: 18,
-    downVotes: 0,
-  },
-  {
-    id: 'c2',
-    author: {
-      name: 'Sarah Miller',
-      avatar:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuBI_LDfW5lv9U8fftPQ_V4CjQNK4MKBXcPJbDZ5Nf_osrHDcXshIsPDH9PyPQy2lu0bWV38ODNMwitzcu4UbjZgHtB1XA2EtHUSZpuqbfzOwPpiJOrlzRd1gVSpsSVz7xG9AvKucEHS2gWVuc6PJrJbTJYW4WIY4_J1hKw6GqZow8ywlWNVxMNku7VBm5-C71dYxVUVS5whbLJ6nIgMfLyEqD_snulMhTv18n6QbYRQLCR35KSwMTIJxZR1Fhka67oFrhrPT2maT_E',
-    },
-    timeAgo: '5h ago',
-    content:
-      'Event sourcing definitely adds overhead, but the "time travel" debugging capability is worth its weight in gold.',
-    upVotes: 42,
-    downVotes: 1,
-  },
-];
-
+  for (const unit of units) {
+    const value = Math.floor(diffInSeconds / unit.seconds);
+    if (value >= 1) {
+      return `${value} ${unit.label} lalu`;
+    }
+  }
+  return 'baru saja';
+}
 function DetailThreadPage() {
   const { id } = useParams();
   const { threadDetail = null, authUser } = useSelector((state) => state);
@@ -67,34 +50,47 @@ function DetailThreadPage() {
     // console.log('Fetching thread detail for threadId:', id);
     dispatch(asyncReceiveThreadDetail(id));
   }, [dispatch, id]);
-  // if (!threadDetail) {
-  //   return (
-  //     <main className="max-w-[720px] mx-auto px-6 py-12">
-  //       <p className="text-sm text-slate-500">Loading thread...</p>
-  //     </main>
-  //   );
-  // }
 
   // TODO: Nanti pakai Redux dispatch
   const handleUpVoteThread = () => {
     if (threadDetail?.downVotesBy.includes(authUser.id)) {
-      dispatch(asyncToggleDownVoteThreadDetail(id));
+      dispatch(asyncToggleNeutralVoteThreadDetail(id));
     }
     // console.log('upvote thread:', id);
     dispatch(asyncToggleUpVoteThreadDetail(id));
   };
   const handleDownVoteThread = () => {
     if (threadDetail?.upVotesBy.includes(authUser.id)) {
-      dispatch(asyncToggleUpVoteThreadDetail(id));
+      dispatch(asyncToggleNeutralVoteThreadDetail(id));
     }
     dispatch(asyncToggleDownVoteThreadDetail(id));
   };
-  const handleSubmitComment = (content) => console.log('comment:', content);
-  const handleUpVoteComment = (id) => console.log('upvote comment', id);
-  const handleDownVoteComment = (id) => console.log('downvote comment', id);
+  const handleSubmitComment = (content) =>
+    dispatch(asyncAddComment({ threadId: id, content }));
+  const handleUpVoteComment = (commentId) => {
+    if (
+      threadDetail?.comments
+        .find((c) => c.id === commentId)
+        ?.downVotesBy.includes(authUser.id)
+    ) {
+      dispatch(asyncToggleNeutralVoteComment({ commentId }));
+    }
+    dispatch(asyncToggleUpVoteComment({ commentId }));
+  };
+  const handleDownVoteComment = (commentId) => {
+    if (
+      threadDetail?.comments
+        .find((c) => c.id === commentId)
+        ?.upVotesBy.includes(authUser.id)
+    ) {
+      dispatch(asyncToggleNeutralVoteComment({ commentId }));
+    }
+    dispatch(asyncToggleDownVoteComment({ commentId }));
+  };
   if (!threadDetail) {
     return null;
   }
+
   console.log('threadDetail:', threadDetail);
   // console.log('threadDetail:', threadDetail);
   return (
@@ -104,7 +100,7 @@ function DetailThreadPage() {
         category={threadDetail?.category}
         title={threadDetail?.title}
         author={threadDetail?.owner}
-        date={threadDetail?.createdAt}
+        date={formatRelativeTime(threadDetail?.createdAt)}
       />
 
       {/* Body */}
@@ -137,27 +133,29 @@ function DetailThreadPage() {
       <section className="bg-sidebar-light dark:bg-slate-900/20 rounded-xl p-6 border border-slate-100 dark:border-slate-800">
         <h3 className="text-sm font-bold uppercase tracking-widest text-accent-earth mb-6 flex items-center gap-2">
           <span className="material-symbols-outlined text-base">forum</span>
-          Comments ({DUMMY_COMMENTS.length})
+          Comments ({threadDetail.comments.length})
         </h3>
 
         {/* Comment Input */}
         <CommentInput
           onSubmit={handleSubmitComment}
-          isLoggedIn={false} // TODO: dari Redux auth
+          isLoggedIn={!!authUser} // TODO: dari Redux auth
         />
 
         {/* Comment List */}
         <div className="space-y-1">
-          {DUMMY_COMMENTS.map((comment) => (
+          {threadDetail.comments.map((comment) => (
             <CommentItem
               key={comment.id}
-              author={comment.author}
-              timeAgo={comment.timeAgo}
+              author={comment.owner}
+              timeAgo={formatRelativeTime(comment.createdAt)}
               content={comment.content}
-              upVotes={comment.upVotes}
-              downVotes={comment.downVotes}
+              upVotes={comment.upVotesBy}
+              downVotes={comment.downVotesBy}
               onUpVote={() => handleUpVoteComment(comment.id)}
               onDownVote={() => handleDownVoteComment(comment.id)}
+              isUpVoted={comment.upVotesBy.includes(authUser.id)}
+              isDownVoted={comment.downVotesBy.includes(authUser.id)}
             />
           ))}
         </div>

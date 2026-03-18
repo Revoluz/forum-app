@@ -1,6 +1,19 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import ColorHash from 'color-hash';
+import { NavLink } from 'react-router-dom';
+function Sidebar({ categories = [] }) {
+  console.log('Sidebar categories:', categories);
+  const colorHash = new ColorHash();
+  const navBaseClass =
+    'flex items-center gap-2 px-2 py-1.5 rounded text-sm font-medium transition-colors';
+  const navActiveClass =
+    'bg-hover-bg dark:bg-slate-800 text-text-main dark:text-slate-100';
+  const navInactiveClass =
+    'text-text-muted dark:text-slate-400 hover:bg-hover-bg dark:hover:bg-slate-800';
 
-function Sidebar() {
   return (
     <aside className="w-[240px] bg-sidebar-light dark:bg-background-dark border-r border-border-subtle dark:border-slate-800 flex flex-col h-screen sticky top-0 shrink-0">
       <div className="p-4 flex flex-col gap-6">
@@ -13,54 +26,62 @@ function Sidebar() {
         </div>
         {/* Navigation */}
         <nav className="flex flex-col gap-1">
-          <a
-            className="flex items-center gap-2 px-2 py-1.5 rounded bg-hover-bg dark:bg-slate-800 text-sm font-medium"
-            href="#"
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              `${navBaseClass} ${isActive ? navActiveClass : navInactiveClass}`
+            }
           >
             <span className="material-symbols-outlined text-[18px]">home</span>
             Home
-          </a>
-          <a
-            className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-hover-bg dark:hover:bg-slate-800 text-sm font-medium text-text-muted dark:text-slate-400 transition-colors"
-            href="#"
+          </NavLink>
+
+          <NavLink
+            to="/leaderboard"
+            className={({ isActive }) =>
+              `${navBaseClass} ${isActive ? navActiveClass : navInactiveClass}`
+            }
           >
             <span className="material-symbols-outlined text-[18px]">
               leaderboard
             </span>
             Leaderboard
-          </a>
+          </NavLink>
         </nav>
         {/* New Thread Button */}
-        <button className="w-full bg-primary hover:bg-primary/90 text-white rounded py-1.5 px-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors">
-          <span className="material-symbols-outlined text-[18px]">add</span>
-          New Thread
-        </button>
+        <Link to="/create">
+          <button className="w-full bg-primary hover:bg-primary/90 text-white rounded py-1.5 px-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+            <span className="material-symbols-outlined text-[18px]">add</span>
+            New Thread
+          </button>
+        </Link>
         {/* Categories */}
         <div className="flex flex-col gap-2 mt-4">
           <h2 className="text-xs font-semibold text-text-muted dark:text-slate-500 uppercase tracking-wider px-2">
             Categories
           </h2>
           <div className="flex flex-col gap-1">
-            {[
-              { color: 'bg-slate-400', name: '#general', count: 142 },
-              { color: 'bg-blue-400', name: '#react', count: 89 },
-              { color: 'bg-yellow-400', name: '#javascript', count: 256 },
-              { color: 'bg-pink-400', name: '#css', count: 64 },
-              { color: 'bg-purple-400', name: '#design', count: 112 },
-            ].map((cat) => (
-              <a
+            {categories.map((cat) => (
+              <Link
                 key={cat.name}
                 className="px-2 py-1 text-sm text-text-muted dark:text-slate-400 hover:bg-hover-bg dark:hover:bg-slate-800 rounded flex items-center justify-between group"
-                href="#"
+                to={`/categories/${cat.name}`}
               >
                 <span className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${cat.color}`} />
+                  <span
+                    className={`w-2 h-2 rounded-full `}
+                    style={{
+                      backgroundColor: colorHash.hex(cat.name),
+                      color: '#fff',
+                    }}
+                  />
                   {cat.name}
                 </span>
                 <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity">
                   {cat.count}
                 </span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>

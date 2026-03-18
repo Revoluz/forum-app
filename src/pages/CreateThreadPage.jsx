@@ -1,6 +1,20 @@
 import React from 'react';
-
+import { useDispatch } from 'react-redux';
+import useInput from '../hooks/useInput';
+import { useNavigate } from 'react-router-dom';
+import { asyncAddThread } from '../states/threads/action';
 function CreateThreadPage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [title, onTitleChange] = useInput('');
+  const [category, onCategoryChange] = useInput('');
+  const [content, onContentChange] = useInput('');
+
+  const handleSubmit = () => {
+    dispatch(asyncAddThread({ title, body: content, category }));
+    navigate('/');
+  };
+
   return (
     <main className="flex-1 w-full max-w-[720px] mx-auto px-6 py-12 flex flex-col gap-6">
       <div className="flex flex-col gap-2 mb-4">
@@ -14,6 +28,8 @@ function CreateThreadPage() {
           className="w-full bg-transparent border-none p-0 text-[28px] font-bold placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:ring-0 focus:outline-none"
           placeholder="Untitled"
           type="text"
+          value={title}
+          onChange={onTitleChange}
         />
         <div className="relative group">
           <div className="flex items-center gap-2 group-focus-within:text-primary transition-colors">
@@ -24,19 +40,26 @@ function CreateThreadPage() {
               className="w-full bg-transparent border-none p-0 text-sm font-medium placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:ring-0 focus:outline-none"
               placeholder="Add category..."
               type="text"
+              value={category}
+              onChange={onCategoryChange}
             />
           </div>
         </div>
         <textarea
           className="w-full flex-1 bg-transparent border-none p-0 text-[15px] leading-[1.8] placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:ring-0 focus:outline-none resize-none min-h-[400px]"
           placeholder="Start writing your thoughts..."
+          value={content}
+          onChange={onContentChange}
         ></textarea>
       </div>
       <div className="flex items-center justify-end gap-4 pt-6 mt-auto border-t border-slate-200 dark:border-slate-800">
         <button className="text-sm font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors px-4 py-2">
           Cancel
         </button>
-        <button className="bg-primary text-white text-sm font-medium px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors shadow-sm">
+        <button
+          className="bg-primary text-white text-sm font-medium px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+          onClick={handleSubmit}
+        >
           Publish Thread
         </button>
       </div>

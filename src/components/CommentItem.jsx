@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import VoteButtons from './VoteButtons';
+import parse from 'html-react-parser';
 
 function CommentItem({
   author,
@@ -27,7 +28,7 @@ function CommentItem({
               <span className="text-[10px] text-slate-400">{timeAgo}</span>
             </div>
             <p className="text-sm mt-1.5 text-slate-700 dark:text-slate-300 leading-relaxed">
-              {content}
+              {parse(content)}
             </p>
           </div>
         </div>

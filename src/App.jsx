@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { asyncPreloadProcess } from './states/isPreload/action';
+import { asyncPopulateThreadAndUsers } from './states/shared/action';
+
 import HomePage from './pages/HomePage';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
@@ -31,21 +33,38 @@ import './index.css';
 function App() {
   const dispatch = useDispatch();
   // nilai `isPreload` dan `authUser` diambil dari store. Saat preload selesai, `isPreload` akan false, dan `authUser` akan berisi data user jika login berhasil, atau null jika tidak ada token/invalid token.
-  const { isPreload = false, authUser = null } = useSelector(
-    (states) => states
-  );
+  const {
+    isPreload = false,
+    authUser = null,
+    threads = null,
+  } = useSelector((states) => states);
   useEffect(() => {
     // saat app pertama kali dijalankan, kita jalankan preload process untuk cek token dan ambil data user (jika token valid). Saat preload selesai, `isPreload` akan false, dan app bisa lanjut render.
     dispatch(asyncPreloadProcess());
+    dispatch(asyncPopulateThreadAndUsers());
   }, [dispatch]);
   if (isPreload) {
     return null;
   }
+  const categoryList = threads
+    ? Object.values(
+        threads.reduce((acc, thread) => {
+          const key = thread.category || 'uncategorized';
+
+          if (!acc[key]) {
+            acc[key] = { name: key, count: 0 };
+          }
+
+          acc[key].count += 1;
+          return acc;
+        }, {})
+      )
+    : [];
   if (authUser === null) {
     return (
       <>
         <div className="bg-background-light dark:bg-background-dark font-display text-text-main dark:text-slate-100 min-h-screen antialiased flex">
-          <Sidebar />
+          <Sidebar categories={categoryList} />
           <div className="flex-1 min-w-0 bg-background-light dark:bg-background-dark">
             <Navbar />
             <Loading />
@@ -62,7 +81,7 @@ function App() {
   return (
     <>
       <div className="bg-background-light dark:bg-background-dark font-display text-text-main dark:text-slate-100 min-h-screen antialiased flex">
-        <Sidebar />
+        <Sidebar categories={categoryList} />
         <div className="flex-1 min-w-0 bg-background-light dark:bg-background-dark">
           <Navbar />
           <Loading />

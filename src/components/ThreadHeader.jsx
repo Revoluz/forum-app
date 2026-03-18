@@ -1,29 +1,6 @@
 import PropTypes from 'prop-types';
 import ColorHash from 'color-hash';
 
-function formatRelativeTime(dateString) {
-  const now = new Date();
-  const date = new Date(dateString);
-  const diffInSeconds = Math.floor((now - date) / 1000);
-  // console.log('date:', date, 'now:', now, 'diffInSeconds:', diffInSeconds);
-
-  const units = [
-    { label: 'tahun', seconds: 60 * 60 * 24 * 365 },
-    { label: 'bulan', seconds: 60 * 60 * 24 * 30 },
-    { label: 'hari', seconds: 60 * 60 * 24 },
-    { label: 'jam', seconds: 60 * 60 },
-    { label: 'menit', seconds: 60 },
-    { label: 'detik', seconds: 1 },
-  ];
-
-  for (const unit of units) {
-    const value = Math.floor(diffInSeconds / unit.seconds);
-    if (value >= 1) {
-      return `${value} ${unit.label} lalu`;
-    }
-  }
-  return 'baru saja';
-}
 function ThreadHeader({ category, title, author, date }) {
   const colorHash = new ColorHash();
   const bg = colorHash.hex(category);
@@ -54,9 +31,7 @@ function ThreadHeader({ category, title, author, date }) {
               {author.name}
             </span>
             <br></br>
-            <p className="text-slate-500 dark:text-slate-400">
-              {formatRelativeTime(date)}
-            </p>
+            <p className="text-slate-500 dark:text-slate-400">{date}</p>
           </div>
         </div>
 

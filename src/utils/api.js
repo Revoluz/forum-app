@@ -171,7 +171,12 @@ const api = (() => {
     return response.data.comment;
   }
 
-  async function upVoteComment({ threadId, commentId }) {
+  async function upVoteComment(threadId, commentId) {
+    console.log(
+      'api upVoteComment threadId and commentId:',
+      threadId,
+      commentId
+    );
     const response = await _fetchWithAuth(
       `/threads/${threadId}/comments/${commentId}/up-vote`,
       {
@@ -184,7 +189,7 @@ const api = (() => {
     return response.data.comment;
   }
 
-  async function downVoteComment({ threadId, commentId }) {
+  async function downVoteComment(threadId, commentId) {
     const response = await _fetchWithAuth(
       `/threads/${threadId}/comments/${commentId}/down-vote`,
       {
@@ -197,7 +202,7 @@ const api = (() => {
     return response.data.comment;
   }
 
-  async function neutralVoteComment({ threadId, commentId }) {
+  async function neutralVoteComment(threadId, commentId) {
     const response = await _fetchWithAuth(
       `/threads/${threadId}/comments/${commentId}/neutral-vote`,
       {

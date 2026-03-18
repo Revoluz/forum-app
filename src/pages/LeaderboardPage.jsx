@@ -87,14 +87,14 @@ function LeaderboardPage() {
       </div>
 
       {/* Load More */}
-      <div className="mt-6 flex justify-center">
+      {/* <div className="mt-6 flex justify-center">
         <button
           type="button"
           className="px-4 py-2 text-sm font-medium text-text-muted-light dark:text-text-muted-dark hover:text-text-main-light dark:hover:text-text-main-dark hover:bg-hover-light dark:hover:bg-hover-dark rounded transition-colors"
         >
           Load More
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import ColorHash from 'color-hash';
 import { NavLink } from 'react-router-dom';
 function Sidebar({ categories = [] }) {
-  console.log('Sidebar categories:', categories);
+  const { authUser } = useSelector((state) => state);
   const colorHash = new ColorHash();
   const navBaseClass =
     'flex items-center gap-2 px-2 py-1.5 rounded text-sm font-medium transition-colors';
@@ -49,13 +49,25 @@ function Sidebar({ categories = [] }) {
             Leaderboard
           </NavLink>
         </nav>
-        {/* New Thread Button */}
-        <Link to="/create">
-          <button className="w-full bg-primary hover:bg-primary/90 text-white rounded py-1.5 px-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors">
-            <span className="material-symbols-outlined text-[18px]">add</span>
-            New Thread
-          </button>
-        </Link>
+        {authUser ? (
+          <Link to="/create">
+            <button className="w-full bg-primary hover:bg-primary/90 text-white rounded py-1.5 px-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors">
+              <span className="material-symbols-outlined text-[18px]">add</span>
+              New Thread
+            </button>
+          </Link>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <p className="text-[11px] text-text-muted dark:text-slate-500 font-medium px-1">
+              Want to share your thoughts?
+            </p>
+            <Link to="/login">
+              <button className="w-full bg-primary hover:bg-primary/90 text-white rounded py-2 px-3 text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm">
+                Join the Discussion
+              </button>
+            </Link>
+          </div>
+        )}
         {/* Categories */}
         <div className="flex flex-col gap-2 mt-4">
           <h2 className="text-xs font-semibold text-text-muted dark:text-slate-500 uppercase tracking-wider px-2">
@@ -66,7 +78,7 @@ function Sidebar({ categories = [] }) {
               <Link
                 key={cat.name}
                 className="px-2 py-1 text-sm text-text-muted dark:text-slate-400 hover:bg-hover-bg dark:hover:bg-slate-800 rounded flex items-center justify-between group"
-                to={`/categories/${cat.name}`}
+                to={`/?category=${cat.name}`}
               >
                 <span className="flex items-center gap-2">
                   <span
@@ -93,16 +105,18 @@ function Sidebar({ categories = [] }) {
             className="w-8 h-8 rounded bg-gray-200 bg-cover bg-center"
             data-alt="User Avatar Profile Picture"
             style={{
-              backgroundImage:
-                "url('https://lh3.googleusercontent.com/aida-public/AB6AXuD_Dt10fZY1gTG-ivAIw0-MmPIHSQcBJ1mFMitsgL50QzqFyKOrh3vJJNn9eF4o9SOicJK8RqxQWw0q3CkYKa8dtCyVEOvxUsE_TWbMvatE18fNae2qSS3XrN0LMZxvmISpUQg6hexGfcWjWLS8rHd5cDUOnc8FTQyIqECz8RfU9UiawXIGV__IEUydf7j4VqM2mVNKnG7V1ahEpYfRtgO9bJJ-yRvK-8h8c3yZ-M1cB-u2_qp5y598RPQrx8vVtccNX4TF_mXixi8')",
+              backgroundImage: `url(${
+                authUser?.avatar ||
+                'https://ui-avatars.com/api/?name=Guest&background=random'
+              })`,
             }}
           />
           <div className="flex flex-col">
             <span className="text-sm font-medium leading-none">
-              Alex Rivera
+              {authUser?.name || 'Guest User'}
             </span>
             <span className="text-xs text-text-muted dark:text-slate-500 mt-1">
-              @arivera
+              {authUser?.username ? `@${authUser.username}` : '@guest'}
             </span>
           </div>
         </div>

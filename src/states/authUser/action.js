@@ -27,13 +27,21 @@ function asyncSetAuthUser({ email, password }) {
   return async (dispatch) => {
     try {
       const token = await api.login({ email, password });
-      // console.log(email, password);
-      console.log('token: ', token);
 
       api.putAccessToken(token);
       const authUser = await api.getOwnProfile();
-      console.log('authUser: ', authUser);
       dispatch(setAuthUserActionCreator(authUser));
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+}
+
+function asyncUnsetAuthUser() {
+  return async (dispatch) => {
+    try {
+      api.putAccessToken('');
+      dispatch(unsetAuthUserActionCreator());
     } catch (error) {
       alert(error.message);
     }
@@ -45,4 +53,5 @@ export {
   setAuthUserActionCreator,
   unsetAuthUserActionCreator,
   asyncSetAuthUser,
+  asyncUnsetAuthUser,
 };

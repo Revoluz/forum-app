@@ -21,7 +21,6 @@ function formatRelativeTime(dateString) {
   const now = new Date();
   const date = new Date(dateString);
   const diffInSeconds = Math.floor((now - date) / 1000);
-  // console.log('date:', date, 'now:', now, 'diffInSeconds:', diffInSeconds);
 
   const units = [
     { label: 'tahun', seconds: 60 * 60 * 24 * 365 },
@@ -44,19 +43,15 @@ function DetailThreadPage() {
   const { id } = useParams();
   const { threadDetail = null, authUser } = useSelector((state) => state);
   const dispatch = useDispatch();
-  // console.log('threadDetail:', threadDetail);
 
   useEffect(() => {
-    // console.log('Fetching thread detail for threadId:', id);
     dispatch(asyncReceiveThreadDetail(id));
   }, [dispatch, id]);
 
-  // TODO: Nanti pakai Redux dispatch
   const handleUpVoteThread = () => {
     if (threadDetail?.downVotesBy.includes(authUser.id)) {
       dispatch(asyncToggleNeutralVoteThreadDetail(id));
     }
-    // console.log('upvote thread:', id);
     dispatch(asyncToggleUpVoteThreadDetail(id));
   };
   const handleDownVoteThread = () => {
@@ -91,8 +86,6 @@ function DetailThreadPage() {
     return null;
   }
 
-  console.log('threadDetail:', threadDetail);
-  // console.log('threadDetail:', threadDetail);
   return (
     <main className="max-w-[720px] mx-auto px-6 py-12">
       {/* Header */}
@@ -121,12 +114,7 @@ function DetailThreadPage() {
         <button
           type="button"
           className="flex items-center gap-1.5 px-3 py-1.5 hover:bg-notion-subtle dark:hover:bg-slate-800 rounded transition-colors text-xs font-semibold text-slate-600 dark:text-slate-400 border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
-        >
-          <span className="material-symbols-outlined text-sm text-accent-earth">
-            share
-          </span>
-          <span>Share</span>
-        </button>
+        ></button>
       </div>
 
       {/* Comments Section */}
@@ -137,10 +125,7 @@ function DetailThreadPage() {
         </h3>
 
         {/* Comment Input */}
-        <CommentInput
-          onSubmit={handleSubmitComment}
-          isLoggedIn={!!authUser} // TODO: dari Redux auth
-        />
+        <CommentInput onSubmit={handleSubmitComment} isLoggedIn={!!authUser} />
 
         {/* Comment List */}
         <div className="space-y-1">

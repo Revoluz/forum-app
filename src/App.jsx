@@ -15,20 +15,6 @@ import DetailThreadPage from './pages/DetailThreadPage';
 import Loading from './components/Loading';
 import './App.css';
 import './index.css';
-// function App() {
-//   return (
-//     <div className="bg-background-light dark:bg-background-dark font-display text-text-main dark:text-slate-100 min-h-screen antialiased flex">
-//       <Sidebar />
-//       <Routes>
-//         <main className="flex-1 min-w-0 bg-background-light dark:bg-background-dark">
-//           <p>Welcome to the Home Page</p>
-//           <Navbar />
-//           <Route path="/" element={<HomePage />} />
-//         </main>
-//       </Routes
-//     </div>
-//   );
-// }
 
 function App() {
   const dispatch = useDispatch();

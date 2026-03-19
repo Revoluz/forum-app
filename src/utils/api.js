@@ -12,7 +12,6 @@ const api = (() => {
   }
 
   async function register({ name, email, password }) {
-    console.log('register: ', { name, email, password });
     const response = await axios.post(`${BASE_URL}/register`, {
       name,
       email,
@@ -25,7 +24,6 @@ const api = (() => {
     //   message: "User created",
     //   data: { user: { id, name, email, avatar } }
     // }
-    console.log('response register:', response.data);
     const { status, message } = response.data;
     if (status !== 'success') {
       throw new Error(message);
@@ -44,14 +42,12 @@ const api = (() => {
     //   message: "Login successful",
     //   data: { token }
     // }
-    // console.log('response login:', response.data);
     const { status, message } = response.data;
     if (status !== 'success') {
       throw new Error(message);
     }
     return response.data.data.token;
   }
-
   // tidak perlu Content-Type, axios otomatis
   async function _fetchWithAuth(url, options = {}) {
     const token = getAccessToken();
@@ -76,8 +72,6 @@ const api = (() => {
     //   status: "success",
     //   data: { user: { id, name, email, avatar } }
     // }
-    console.log('response getOwnProfile:', response);
-    console.log('response getOwnProfile:', response.data.user);
     if (response.status !== 'success') {
       throw new Error('Failed to fetch profile');
     }
@@ -109,7 +103,6 @@ const api = (() => {
     if (response.status !== 'success') {
       throw new Error('Failed to fetch thread detail');
     }
-    console.log('response getThreadDetail:', response.data);
     return response.data.detailThread;
   }
 
@@ -135,7 +128,6 @@ const api = (() => {
     if (response.status !== 'success') {
       throw new Error('Failed to upvote thread');
     }
-    console.log('response upVoteThread:', response.data);
     return response.data.thread;
   }
 
@@ -172,11 +164,6 @@ const api = (() => {
   }
 
   async function upVoteComment(threadId, commentId) {
-    console.log(
-      'api upVoteComment threadId and commentId:',
-      threadId,
-      commentId
-    );
     const response = await _fetchWithAuth(
       `/threads/${threadId}/comments/${commentId}/up-vote`,
       {
@@ -216,11 +203,11 @@ const api = (() => {
   }
 
   async function getLeaderboard() {
-    const response = await _fetchWithAuth('/leaderboard');
+    const response = await _fetchWithAuth('/leaderboards');
     if (response.status !== 'success') {
       throw new Error('Failed to fetch leaderboard');
     }
-    return response.data.leaderboard;
+    return response.data.leaderboards;
   }
   return {
     putAccessToken,

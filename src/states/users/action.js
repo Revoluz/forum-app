@@ -24,5 +24,4 @@ function asyncRegister({ name, email, password }) {
     }
   };
 }
-
 export { ActionType, receiveUsersActionCreator, asyncRegister };

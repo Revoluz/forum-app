@@ -6,17 +6,9 @@ const rankBorderColor = {
   3: 'border-l-amber-600',
 };
 
-function LeaderboardRow({ rank, name, avatar, score, badge }) {
-  const borderColor = rankBorderColor[rank] || 'border-l-transparent';
-  const isTopThree = rank <= 3;
-
-  // Generate initials dari nama
-  const initials = name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
+function LeaderboardRow({ index, name, avatar, score, badge }) {
+  const borderColor = rankBorderColor[index] || 'border-l-transparent';
+  const isTopThree = index <= 3;
 
   return (
     <tr
@@ -24,7 +16,7 @@ function LeaderboardRow({ rank, name, avatar, score, badge }) {
     >
       {/* Rank */}
       <td className="px-6 py-4 font-mono text-text-muted-light dark:text-text-muted-dark font-medium">
-        #{rank}
+        #{index}
       </td>
 
       {/* Contributor */}
@@ -38,7 +30,12 @@ function LeaderboardRow({ rank, name, avatar, score, badge }) {
             />
           ) : (
             <div className="w-8 h-8 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs">
-              {initials}
+              {name
+                .split(' ')
+                .map((n) => n[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2)}
             </div>
           )}
           <span className="font-medium group-hover:text-primary transition-colors">
@@ -65,7 +62,7 @@ function LeaderboardRow({ rank, name, avatar, score, badge }) {
 }
 
 LeaderboardRow.propTypes = {
-  rank: PropTypes.number.isRequired,
+  index: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   avatar: PropTypes.string,
   score: PropTypes.number.isRequired,

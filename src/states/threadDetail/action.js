@@ -94,9 +94,7 @@ function asyncReceiveThreadDetail(threadId) {
   return async (dispatch) => {
     dispatch(showLoading());
     try {
-      console.log('Fetching thread detail for threadId:', threadId);
       const threadDetail = await api.getThreadDetail(threadId);
-      console.log('Received thread detail:', threadDetail);
       dispatch(receiveThreadDetailActionCreator(threadDetail));
     } catch (error) {
       alert(error.message);

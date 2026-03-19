@@ -11,7 +11,6 @@ function LoginPage() {
   const [password, onPasswordChange] = useInput('');
 
   const onLogin = ({ email, password }) => {
-    console.log(email, password);
     dispatch(asyncSetAuthUser({ email, password }));
   };
 

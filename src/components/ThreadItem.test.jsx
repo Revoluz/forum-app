@@ -39,7 +39,7 @@ describe('ThreadItem component', () => {
 
     const titleElement = await screen.getByText(fakeThreadItem.title);
     expect(titleElement).toBeInTheDocument();
-    expect(titleElement).toHaveTextContent(fakeThreadItem.title);
+    expect(titleElement).toHaveTextContent('error scenario testing');
   });
 
   it('should display the correct upvote and downvote counts', async () => {

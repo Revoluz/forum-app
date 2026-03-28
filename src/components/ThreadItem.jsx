@@ -59,7 +59,10 @@ function ThreadItem({
               keyboard_arrow_up
             </span>
           </button>
-          <span className="text-sm font-medium text-text-main dark:text-slate-300">
+          <span
+            data-testid="vote-count"
+            className="text-sm font-medium text-text-main dark:text-slate-300 "
+          >
             {upVotesBy.length - downVotesBy.length}
           </span>
           <button className="hover:text-red-500 transition-colors">

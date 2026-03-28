@@ -1,6 +1,7 @@
 import js from "@eslint/js";
 import globals from "globals";
 import pluginReact from "eslint-plugin-react";
+import pluginCypress from 'eslint-plugin-cypress';
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import prettier from "eslint-plugin-prettier";
@@ -39,6 +40,7 @@ export default defineConfig([
   },
   ...compat.extends('dicodingacademy'),
   pluginReact.configs.flat.recommended,
+  pluginCypress.configs.recommended,
   prettierConfig,
   {
     rules: {

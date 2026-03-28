@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { asyncPopulateThreadAndUsers } from '../states/shared/action';
 import { useSearchParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 function HomePage() {
   const [searchParams] = useSearchParams();
@@ -49,59 +50,70 @@ function HomePage() {
     return threadList;
   }, [threadList, sortBy, category]);
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      {/* Visitor Mode Banner */}
-      {!authUser && (
-        <div className="mb-8 p-4 bg-primary/5 border border-primary/20 rounded-lg flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-semibold text-primary">Visitor Mode</h3>
-            <p className="text-xs text-text-muted dark:text-slate-400">
-              Log in to create threads, vote on discussions, and join the
-              conversation.
-            </p>
+    <>
+      <Helmet>
+        <title>Forum Diskusi — Home</title>
+        <meta name="description" content="Forum diskusi untuk masyarakat." />
+        <meta name="og:title" content="Forum Diskusi" />
+        <meta name="og:description" content="Forum diskusi untuk masyarakat." />
+      </Helmet>
+
+      <div className="max-w-4xl mx-auto p-6">
+        {/* Visitor Mode Banner */}
+        {!authUser && (
+          <div className="mb-8 p-4 bg-primary/5 border border-primary/20 rounded-lg flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-primary">
+                Visitor Mode
+              </h3>
+              <p className="text-xs text-text-muted dark:text-slate-400">
+                Log in to create threads, vote on discussions, and join the
+                conversation.
+              </p>
+            </div>
+            <Link
+              to="/login"
+              className="bg-primary text-white text-xs px-4 py-1.5 rounded font-medium"
+            >
+              Create Account
+            </Link>
           </div>
-          <Link
-            to="/login"
-            className="bg-primary text-white text-xs px-4 py-1.5 rounded font-medium"
+        )}
+        {/* Filters */}
+        <div className="flex items-center gap-4 mb-6 text-sm text-text-muted dark:text-slate-400">
+          <button
+            type="button"
+            className={
+              sortBy === 'latest'
+                ? 'font-medium text-text-main dark:text-slate-200 border-b-2 border-primary pb-1'
+                : 'hover:text-text-main dark:hover:text-slate-200 pb-1 border-b-2 border-transparent hover:border-border-subtle transition-colors'
+            }
+            onClick={() => setSortBy('latest')}
           >
-            Create Account
-          </Link>
+            Latest
+          </button>
+          <button
+            type="button"
+            className={
+              sortBy === 'top'
+                ? 'font-medium text-text-main dark:text-slate-200 border-b-2 border-primary pb-1'
+                : 'hover:text-text-main dark:hover:text-slate-200 pb-1 border-b-2 border-transparent hover:border-border-subtle transition-colors'
+            }
+            onClick={() => setSortBy('top')}
+          >
+            Top
+          </button>
         </div>
-      )}
-      {/* Filters */}
-      <div className="flex items-center gap-4 mb-6 text-sm text-text-muted dark:text-slate-400">
-        <button
-          type="button"
-          className={
-            sortBy === 'latest'
-              ? 'font-medium text-text-main dark:text-slate-200 border-b-2 border-primary pb-1'
-              : 'hover:text-text-main dark:hover:text-slate-200 pb-1 border-b-2 border-transparent hover:border-border-subtle transition-colors'
-          }
-          onClick={() => setSortBy('latest')}
-        >
-          Latest
-        </button>
-        <button
-          type="button"
-          className={
-            sortBy === 'top'
-              ? 'font-medium text-text-main dark:text-slate-200 border-b-2 border-primary pb-1'
-              : 'hover:text-text-main dark:hover:text-slate-200 pb-1 border-b-2 border-transparent hover:border-border-subtle transition-colors'
-          }
-          onClick={() => setSortBy('top')}
-        >
-          Top
-        </button>
+        <div className="flex flex-col gap-2">
+          {sortedThreads.map((thread) => (
+            <>
+              <ThreadItem key={thread.id} {...thread} />
+              <hr className="border-border-subtle dark:border-slate-700 " />
+            </>
+          ))}
+        </div>
       </div>
-      <div className="flex flex-col gap-2">
-        {sortedThreads.map((thread) => (
-          <>
-            <ThreadItem key={thread.id} {...thread} />
-            <hr className="border-border-subtle dark:border-slate-700 " />
-          </>
-        ))}
-      </div>
-    </div>
+    </>
   );
 }
 

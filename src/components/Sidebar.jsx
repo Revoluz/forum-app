@@ -22,7 +22,7 @@ function Sidebar({ categories = [] }) {
           <div className="size-6 bg-primary rounded flex items-center justify-center text-white">
             <span className="material-symbols-outlined text-sm">forum</span>
           </div>
-          <h1 className="font-semibold text-sm">Developer Forum</h1>
+          <h1 className="font-semibold text-sm">Developer Forum App</h1>
         </div>
         {/* Navigation */}
         <nav className="flex flex-col gap-1">
